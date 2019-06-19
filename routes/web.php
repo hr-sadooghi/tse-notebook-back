@@ -15,19 +15,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/namads/import', function () {
+Route::get('/companies/import', function () {
     $json = json_decode(file_get_contents('https://core.tadbirrlc.com//StocksHandler.ashx?{%22Type%22:%22ALL21%22,%22Lan%22:%22Fa%22}&jsoncallback='), true);
 
     foreach ($json as $item) {
 
-        $namad = new App\Namad();
+        $namad = new App\Company();
         $namad->symbol = $item['sf'];
+        $namad->name = $item['cn'];
         $namad->id_code = $item['ic'];
         $namad->company_12_digit_name = $item['nc'];
-        $namad->company_category_id = $item['sc'];
-        $namad->company_name = $item['cn'];
+        $namad->category_id = $item['sc'];
         $namad->save();
     }
 
     return $json;
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
