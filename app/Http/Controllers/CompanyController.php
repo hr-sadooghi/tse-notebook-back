@@ -132,4 +132,21 @@ class CompanyController extends Controller
         $user->favorites()->detach($company_id);
         return response('', 200);
     }
+
+    public function apiGetCompaniesItem(Company $company)
+    {
+        $companyInfo = [
+            'id' => $company->id,
+            'name' => $company->name,
+            'symbol' => $company->symbol,
+            'category' => [
+                'id' => $company->category_id,//$company->category()->id,
+                'name' => 'نام دسته بندی'/*$company->category()->name,*/
+            ],
+            'last_price' => 1210,
+            'avg_price' => 1311,
+            'amount' => 3000
+        ];
+        return $companyInfo;
+    }
 }

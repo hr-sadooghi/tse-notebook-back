@@ -10,7 +10,7 @@ class Company extends Model
 
     public function category()
     {
-        return $this->belongsTo(CompanyCategory::class);
+        return $this->belongsTo(CompanyCategory::class, 'category_id', 'id');
     }
 
     public function users()

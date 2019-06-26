@@ -15,6 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/files/{file}', 'FileController@webGet')->name('get_file');
+Route::get('/files/{file}/thumb', 'FileController@webGetThumb')->name('get_file_thumb');
+
 Route::get('/companies/import', function () {
     $json = json_decode(file_get_contents('https://core.tadbirrlc.com//StocksHandler.ashx?{%22Type%22:%22ALL21%22,%22Lan%22:%22Fa%22}&jsoncallback='), true);
 

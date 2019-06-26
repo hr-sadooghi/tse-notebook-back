@@ -25,9 +25,11 @@ Route::get('/user', function () {
 
 
 Route::get('/companies', 'CompanyController@apiGetAllCompanies');
+//Route::get('/companies/{id}', 'CompanyController@apiGetCompaniesItem');
 Route::get('/companies/favorites', 'CompanyController@apiGetAllCompaniesAndFavoriteState');
 Route::get('/users/favorites/companies', 'CompanyController@apiGetCurrentUserFavoriteCompanies');
 Route::post('/users/favorites/companies/{company_id}', 'CompanyController@apiPostAddCompanyToCurrentUserFavorite');
 Route::delete('/users/favorites/companies/{company_id}', 'CompanyController@apiDeleteRemoveCompanyFromCurrentUserFavorite');
-
+Route::get('/links/meta-tag-extractor', 'LinkController@apiGetMetaTagExtractor');
+Route::post('/files/{type?}', 'FileController@apiPost');
 
