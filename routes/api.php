@@ -31,5 +31,10 @@ Route::get('/users/favorites/companies', 'CompanyController@apiGetCurrentUserFav
 Route::post('/users/favorites/companies/{company_id}', 'CompanyController@apiPostAddCompanyToCurrentUserFavorite');
 Route::delete('/users/favorites/companies/{company_id}', 'CompanyController@apiDeleteRemoveCompanyFromCurrentUserFavorite');
 Route::get('/links/meta-tag-extractor', 'LinkController@apiGetMetaTagExtractor');
+
 Route::post('/files/{type?}', 'FileController@apiPost');
+Route::get('/companies/{company}/events', 'CompanyController@apiGetEventList');
+Route::post('/events/link', 'EventController@apiPostLink');
+Route::post('/events/trade', 'EventController@apiPostTrade');
+Route::post('/events', 'EventController@apiPost');
 

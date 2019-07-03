@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Company;
 use App\User;
+use App\Event;
+use App\Link;
+use App\Trade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -112,7 +115,19 @@ class CompanyController extends Controller
         $user_id = 1;//auth()->id();
         /** @var User $user */
         $favorites = User::find($user_id)->favorites()->get(['id', 'symbol', 'name']);
-        return $favorites;
+        if (!$favorites) {
+            abort(404);
+        }
+        $list = [];
+        foreach ($favorites as $favorite) {
+            $list[] = [
+                'id' => $favorite->id,
+                'symbol' => $favorite->symbol,
+                'name' => $favorite->name,
+                'favorite' => 1,
+            ];
+        }
+        return $list;
     }
 
     public function apiPostAddCompanyToCurrentUserFavorite($company_id)
@@ -148,5 +163,15 @@ class CompanyController extends Controller
             'amount' => 3000
         ];
         return $companyInfo;
+    }
+
+    public function apiGetEventList(Company $company)
+    {
+        $user_id = 1;//auth()->id();
+        $events = Event::
+            where('company_id', $company->id)
+            ->where('user_id', $user_id)
+            ->with('detail')->get();
+        return $events;
     }
 }

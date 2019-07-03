@@ -18,7 +18,7 @@ class CreateEventsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('company_id');
             $table->text('description');
-            $table->enum('type', ['text', 'image', 'file', 'link']);
+            $table->enum('type', ['text', 'image', 'file', 'link', 'trade']);
             $table->date('date');
             $table->string('detail_type')->nullable();
             $table->unsignedBigInteger('detail_id')->nullable();
