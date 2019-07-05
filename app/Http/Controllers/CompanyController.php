@@ -88,11 +88,35 @@ class CompanyController extends Controller
         //
     }
 
+    /**
+     * @OA\Get(
+     *     path="/companies",
+     *     summary="list of all companies",
+     *     @OA\Response(
+     *          response="200",
+     *          description="Get list of all Tehran stock companies.",
+     *          @OA\JsonContent(
+     *          ),
+     *          @OA\Schema(type="array", items="object")
+     *     )
+     * )
+     */
     public function apiGetAllCompanies()
     {
         return Company::all();
     }
 
+    /**
+     * @OA\Get(
+     *     path="/companies/favorites",
+     *     summary="title and description of specified URL",
+     *     @OA\Response(
+     *          response="200",
+     *          description="Get list of all Tehran stock companies with favorite status.",
+     *          @OA\JsonContent()
+     *     )
+     * )
+     */
     public function apiGetAllCompaniesAndFavoriteState()
     {
         $user_id = 1;//auth()->id();
@@ -108,44 +132,6 @@ class CompanyController extends Controller
                 DB::raw('IF(favorites.company_id IS NULL, false, true) AS favorite')
             )
             ->get();
-    }
-
-    public function apiGetCurrentUserFavoriteCompanies()
-    {
-        $user_id = 1;//auth()->id();
-        /** @var User $user */
-        $favorites = User::find($user_id)->favorites()->get(['id', 'symbol', 'name']);
-        if (!$favorites) {
-            abort(404);
-        }
-        $list = [];
-        foreach ($favorites as $favorite) {
-            $list[] = [
-                'id' => $favorite->id,
-                'symbol' => $favorite->symbol,
-                'name' => $favorite->name,
-                'favorite' => 1,
-            ];
-        }
-        return $list;
-    }
-
-    public function apiPostAddCompanyToCurrentUserFavorite($company_id)
-    {
-        $user_id = 1;//auth()->id();
-        /** @var User $user */
-        $user = User::find($user_id);
-        $user->favorites()->attach($company_id);
-        return response('', 201);
-    }
-
-    public function apiDeleteRemoveCompanyFromCurrentUserFavorite($company_id)
-    {
-        $user_id = 1;//auth()->id();
-        /** @var User $user */
-        $user = User::find($user_id);
-        $user->favorites()->detach($company_id);
-        return response('', 200);
     }
 
     public function apiGetCompaniesItem(Company $company)
@@ -165,6 +151,23 @@ class CompanyController extends Controller
         return $companyInfo;
     }
 
+    /**
+     * @OA\Get(
+     *     path="/companies/{companyId}/events",
+     *     summary="list of events for specified company",
+     *     @OA\Parameter(
+     *          name="companyId",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer", format="int64")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Get list of events for specified company.",
+     *          @OA\JsonContent()
+     *     )
+     * )
+     */
     public function apiGetEventList(Company $company)
     {
         $user_id = 1;//auth()->id();

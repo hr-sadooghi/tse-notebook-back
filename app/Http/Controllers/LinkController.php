@@ -7,6 +7,23 @@ use Illuminate\Http\Request;
 
 class LinkController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/links/meta-tag-extractor",
+     *     summary="Get title and description of specified URL",
+     *     @OA\Parameter(
+     *          name="url",
+     *          in="query",
+     *          required=true,
+     *          @OA\Schema(type="string", format="string", example="http://www.google.com")
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Get meta tag information for specified url.",
+     *          @OA\JsonContent()
+     *     )
+     * )
+     */
     public function apiGetMetaTagExtractor(Request $request)
     {
         $url = $request->get('url');
@@ -37,7 +54,7 @@ class LinkController extends Controller
 
         $html = file_get_contents_curl($url);
 
-        $doc = new DOMDocument();
+        $doc = new \DOMDocument();
         @$doc->loadHTML($html);
 
         $nodes = $doc->getElementsByTagName('title');
