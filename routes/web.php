@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/api-doc', function () {
+    return view('api-doc');
+});
+
 Route::get('/files/{file}', 'FileController@webGet')->name('get_file');
 Route::get('/files/{file}/thumb', 'FileController@webGetThumb')->name('get_file_thumb');
 

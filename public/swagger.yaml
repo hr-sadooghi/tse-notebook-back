@@ -1,0 +1,226 @@
+openapi: 3.0.0
+info:
+  title: 'TSE Notebook APIDoc'
+  description: 'This REST APIDoc provide backend for TSE Notebook Web Application.'
+  version: '0.1'
+servers:
+  -
+    url: 'http://127.0.0.1/tse-notebook-back/public/api'
+  -
+    url: 'http://127.0.0.1:8000/api/'
+  -
+    url: 'http://tseyar.ir/api/'
+paths:
+  /companies:
+    get:
+      summary: 'list of all companies'
+      operationId: 'App\Http\Controllers\CompanyController::apiGetAllCompanies'
+      responses:
+        '200':
+          description: 'Get list of all Tehran stock companies.'
+          content:
+            application/json:
+              schema: {  }
+  /companies/favorites:
+    get:
+      summary: 'title and description of specified URL'
+      operationId: 'App\Http\Controllers\CompanyController::apiGetAllCompaniesAndFavoriteState'
+      responses:
+        '200':
+          description: 'Get list of all Tehran stock companies with favorite status.'
+          content:
+            application/json:
+              schema: {  }
+  '/companies/{companyId}/events':
+    get:
+      summary: 'list of events for specified company'
+      operationId: 'App\Http\Controllers\CompanyController::apiGetEventList'
+      parameters:
+        -
+          name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Get list of events for specified company.'
+          content:
+            application/json:
+              schema: {  }
+  /events/trade:
+    post:
+      summary: 'add add new event to company'
+      operationId: 'App\Http\Controllers\EventController::apiPostTrade'
+      requestBody:
+        description: 'Post data to create a new trade and event resources.'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventTrade'
+      responses:
+        '201':
+          description: Success
+        '422':
+          description: 'Failed. Invalid parameters'
+  /events:
+    post:
+      summary: 'add add new event to company'
+      operationId: 'App\Http\Controllers\EventController::apiPost'
+      requestBody:
+        description: 'Post data to create a new trade and event resources.'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+      responses:
+        '201':
+          description: Success
+        '422':
+          description: 'Failed. Invalid parameters'
+  /links/meta-tag-extractor:
+    get:
+      summary: 'Get title and description of specified URL'
+      operationId: 'App\Http\Controllers\LinkController::apiGetMetaTagExtractor'
+      parameters:
+        -
+          name: url
+          in: query
+          required: true
+          schema:
+            type: string
+            format: string
+            example: 'http://www.google.com'
+      responses:
+        '200':
+          description: 'Get meta tag information for specified url.'
+          content:
+            application/json:
+              schema: {  }
+  /users/favorites/companies:
+    get:
+      summary: 'list favorite companies'
+      operationId: 'App\Http\Controllers\UserController::apiGetCurrentUserFavoriteCompanies'
+      responses:
+        '200':
+          description: 'Get list of favorite companies.'
+          content:
+            application/json:
+              schema: {  }
+  '/users/favorites/{companyId}':
+    post:
+      summary: 'add company to favorite'
+      operationId: 'App\Http\Controllers\UserController::apiPostAddCompanyToCurrentUserFavorite'
+      parameters:
+        -
+          name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'add company from favorite.'
+          content:
+            application/json:
+              schema: {  }
+    delete:
+      summary: 'remove company from favorite'
+      operationId: 'App\Http\Controllers\UserController::apiDeleteRemoveCompanyFromCurrentUserFavorite'
+      parameters:
+        -
+          name: companyId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'remove company from favorite.'
+          content:
+            application/json:
+              schema: {  }
+components:
+  schemas:
+    Event:
+      description: 'Data structure to create new event.'
+      properties:
+        type:
+          description: type
+          type: enum
+          enum:
+            - text
+            - image
+            - file
+            - link
+            - trade
+          example: text
+        detail_id:
+          description: 'This is detail_id'
+          type: integer
+          example: ''
+        description:
+          description: 'This is description'
+          type: string
+          example: 'this is good share that I bought.'
+        date:
+          description: 'This is date'
+          type: date
+          example: '2019-3-7'
+        company_id:
+          description: 'This is company_id'
+          type: integer
+          example: '1'
+      type: object
+    EventTrade:
+      description: 'Data structure to create new trade event.'
+      properties:
+        unit_price:
+          description: 'each unit price in rial'
+          type: integer
+          example: '237'
+        units:
+          description: 'number of units'
+          type: integer
+          example: '10000'
+        type:
+          description: type
+          type: enum
+          enum:
+            - sell
+            - buy
+          example: buy
+        wage:
+          description: 'This is wage'
+          type: integer
+          example: '0'
+        total_amount:
+          description: 'This is total_amount'
+          type: integer
+          example: '2370000'
+        status:
+          description: 'This is status'
+          type: enum
+          enum:
+            - done
+            - half
+            - going
+          example: done
+        description:
+          description: 'This is description'
+          type: string
+          example: 'this is good share that I bought.'
+        date:
+          description: 'This is date'
+          type: date
+          example: '2019-3-7'
+        company_id:
+          description: 'This is company_id'
+          type: integer
+          example: '1'
+      type: object

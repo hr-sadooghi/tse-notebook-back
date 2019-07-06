@@ -31,16 +31,16 @@ Route::get('/user', function () {
 });
 
 Route::prefix('companies')->group(function () {
-    Route::get('', 'CompanyController@apiGetAllCompanies');
-//Route::get('/companies/{id}', 'CompanyController@apiGetCompaniesItem');
-    Route::get('favorites', 'CompanyController@apiGetAllCompaniesAndFavoriteState');
-    Route::get('{company}/events', 'CompanyController@apiGetEventList');
+    Route::get('', 'Api\CompanyController@getAllCompanies');
+//Route::get('/companies/{id}', 'Api\CompanyController@getCompaniesItem');
+    Route::get('favorites', 'Api\CompanyController@getAllCompaniesAndFavoriteState');
+    Route::get('{company}/events', 'Api\CompanyController@getEventList');
 });
 
 Route::prefix('events')->group(function () {
-    Route::post('', 'EventController@apiPost');
-    Route::post('link', 'EventController@apiPostLink');
-    Route::post('trade', 'EventController@apiPostTrade');
+    Route::post('', 'Api\EventController@post');
+    Route::post('link', 'Api\EventController@postLink');
+    Route::post('trade', 'Api\EventController@postTrade');
 });
 
 Route::prefix('users')->group(function () {
