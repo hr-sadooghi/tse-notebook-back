@@ -11,6 +11,7 @@ class LinkController extends Controller
      * @OA\Get(
      *     path="/links/meta-tag-extractor",
      *     summary="Get title and description of specified URL",
+     *     tags={"link"},
      *     @OA\Parameter(
      *          name="url",
      *          in="query",

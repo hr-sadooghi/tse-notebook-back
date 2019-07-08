@@ -15,6 +15,37 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::get('test-rest', function(){
+
+
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "http://localhost/tse-notebook-back/public/api/auth/login",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_SSL_VERIFYPEER=>false,
+        CURLOPT_SSL_VERIFYHOST=>false,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+    ));
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+        echo "cURL Error #:" . $err;
+    } else {
+        echo $response;
+    }
+    dd('end');
+});
+
 Route::get('/api-doc', function () {
     return view('api-doc');
 });

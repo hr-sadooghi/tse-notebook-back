@@ -10,6 +10,7 @@ class UserController extends Controller
      * @OA\Get(
      *     path="/users/favorites/companies",
      *     summary="list favorite companies",
+     *     tags={"user"},
      *     @OA\Response(
      *          response="200",
      *          description="Get list of favorite companies.",
@@ -19,7 +20,7 @@ class UserController extends Controller
      */
     public function apiGetCurrentUserFavoriteCompanies()
     {
-        $user_id = 1;//auth()->id();
+        $user_id = auth()->id();
         /** @var User $user */
         $favorites = User::find($user_id)->favorites()->get(['id', 'symbol', 'name']);
         if (!$favorites) {
@@ -41,6 +42,7 @@ class UserController extends Controller
      * @OA\Post(
      *     path="/users/favorites/{companyId}",
      *     summary="add company to favorite",
+     *     tags={"user"},
      *     @OA\Parameter(
      *          name="companyId",
      *          in="path",
@@ -56,7 +58,7 @@ class UserController extends Controller
      */
     public function apiPostAddCompanyToCurrentUserFavorite($company_id)
     {
-        $user_id = 1;//auth()->id();
+        $user_id = auth()->id();
         /** @var User $user */
         $user = User::find($user_id);
         $user->favorites()->attach($company_id);
@@ -67,6 +69,7 @@ class UserController extends Controller
      * @OA\Delete(
      *     path="/users/favorites/{companyId}",
      *     summary="remove company from favorite",
+     *     tags={"user"},
      *     @OA\Parameter(
      *          name="companyId",
      *          in="path",
@@ -82,7 +85,7 @@ class UserController extends Controller
      */
     public function apiDeleteRemoveCompanyFromCurrentUserFavorite($company_id)
     {
-        $user_id = 1;//auth()->id();
+        $user_id = auth()->id();
         /** @var User $user */
         $user = User::find($user_id);
         $user->favorites()->detach($company_id);

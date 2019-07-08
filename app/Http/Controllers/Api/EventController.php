@@ -10,11 +10,101 @@ use App\Trade;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use OpenApi\Annotations AS OA;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class EventController extends Controller
 {
     /**
-     * @OA\Post(tags="event", path="/events/trade", summary="add add new event to company",
+     * @OA\Post(path="/events", summary="add new event to company", tags={"event"},
+     *     @OA\RequestBody(
+     *          description="Post data to create a new trade and event resources.",
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/Event")
+     *     ),
+     *     @OA\Response( response="201", description="Success"),
+     *     @OA\Response( response="422", description="Failed. Invalid parameters"),
+     * )
+     * @param ApiPostEvent $request
+     * @return
+     */
+    public function post(ApiPostEvent $request)
+    {
+        $validated = $request->validated();
+
+        $type = $request->get('type');
+        $detail_id = $request->get('detail_id');
+        $description = $request->get('description');
+        $date = $request->get('date');
+        $company_id = $request->get('company_id');
+        //TODO: change it after JWT
+        $user_id = auth()->id();
+
+        $typeMaps = [
+            'text' => null,
+            'link' => 'App\\Link',
+            'image' => 'App\\File',
+            'file' => 'App\\File',
+            'trade' => 'App\\Trade',
+        ];
+
+        $event = new Event();
+        $event->user_id = $user_id;
+        $event->company_id = $company_id;
+        $event->description = $description;
+        $event->type = $type;
+        $event->date = $date;
+        $event->detail_type = $typeMaps[$type];
+        $event->detail_id = $detail_id;
+        $event->save();
+        return response([
+            'message' => 'ثبت با موفقیت انجام شد.'
+        ], 201);
+    }
+
+    /**
+     * @OA\Put(path="/events/{eventId}", summary="update event", tags={"event"},
+     *     @OA\Parameter(
+     *          name="eventId",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer", format="int64")
+     *     ),
+     *     @OA\RequestBody(
+     *          description="Put data to update event resource.",
+     *          required=true,
+     *          @OA\JsonContent(ref="#/components/schemas/Event")
+     *     ),
+     *     @OA\Response( response="201", description="Success"),
+     *     @OA\Response( response="422", description="Failed. Invalid parameters"),
+     * )
+     * @param Request $request
+     * @param Event $event
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function put(Request $request, Event $event)
+    {
+//        dump($request);
+//        dd($event);
+//        $validated = $request->validated();
+
+        $description = $request->get('description');
+//        dump($description);
+        $date = $request->get('date');
+        //TODO: change it after JWT
+        $user_id = auth()->id();
+        if($event->user_id !== $user_id){
+            throw new BadRequestHttpException();
+        }
+        $event->description = $description;
+        $event->date = $date;
+        $event->save();
+        return response([
+            'message' => 'ثبت با موفقیت انجام شد.'
+        ], 200);
+    }
+
+    /**
+     * @OA\Post(tags="event", path="/events/trade", summary="add add new event to company", tags={"event"},
      *     @OA\RequestBody(
      *          description="Post data to create a new trade and event resources.",
      *          required=true,
@@ -47,7 +137,7 @@ class EventController extends Controller
         $date = $validated['date'];
         $company_id = $validated['company_id'];
         //TODO: change it after JWT
-        $user_id = 1;//auth()->id();
+        $user_id = auth()->id();
 
         $trade = new Trade();
         $trade->unit_price = $unit_price;
@@ -75,53 +165,6 @@ class EventController extends Controller
         ], 201);
     }
 
-    /**
-     * @OA\Post(path="/events", summary="add new event to company", tags="event",
-     *     @OA\RequestBody(
-     *          description="Post data to create a new trade and event resources.",
-     *          required=true,
-     *          @OA\JsonContent(ref="#/components/schemas/Event")
-     *     ),
-     *     @OA\Response( response="201", description="Success"),
-     *     @OA\Response( response="422", description="Failed. Invalid parameters"),
-     * )
-     * @param ApiPostEvent $request
-     * @return
-     */
-    public function post(ApiPostEvent $request)
-    {
-        $validated = $request->validated();
-
-        $type = $request->get('type');
-        $detail_id = $request->get('detail_id');
-        $description = $request->get('description');
-        $date = $request->get('date');
-        $company_id = $request->get('company_id');
-        //TODO: change it after JWT
-        $user_id = 1;//auth()->id();
-
-        $typeMaps = [
-            'text' => null,
-            'link' => 'App\\Link',
-            'image' => 'App\\File',
-            'file' => 'App\\File',
-            'trade' => 'App\\Trade',
-        ];
-
-        $event = new Event();
-        $event->user_id = $user_id;
-        $event->company_id = $company_id;
-        $event->description = $description;
-        $event->type = $type;
-        $event->date = $date;
-        $event->detail_type = $typeMaps[$type];
-        $event->detail_id = $detail_id;
-        $event->save();
-        return response([
-            'message' => 'ثبت با موفقیت انجام شد.'
-        ], 201);
-    }
-
     public function postLink(Request $request)
     {
         $url = $request->get('url');
@@ -131,7 +174,7 @@ class EventController extends Controller
         $date = $request->get('date');
         $company_id = $request->get('company_id');
         //TODO: change it after JWT
-        $user_id = 1;//auth()->id();
+        $user_id = auth()->id();
 
         $link = new Link();
         $link->url = $url;
